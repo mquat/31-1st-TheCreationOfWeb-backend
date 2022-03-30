@@ -21,7 +21,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    'users'
+    'users',
+    'products',
+    'carts'
 ]
 
 MIDDLEWARE = [
@@ -55,9 +57,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'fruitz_company.wsgi.application'
 
+ALGORITHM = ALGORITHM
+
 DATABASES = DATABASES
 
-ALGORITHM = ALGORITHM
 
 AUTH_PASSWORD_VALIDATORS = [
     {
