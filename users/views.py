@@ -47,6 +47,7 @@ class SignInView(View):
             user = User.objects.get(user=data['user'])
 
             is_checked = bcrypt.checkpw(data['password'].encode('utf-8'), user.password.encode('utf-8'))      
+            
             if not is_checked:
                 return JsonResponse({'message':'INVALID_PASSWORD'}, status=401)   
             
