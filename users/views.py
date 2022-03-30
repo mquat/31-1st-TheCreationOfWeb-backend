@@ -44,7 +44,6 @@ class SignInView(View):
     def post(self, request):
         try: 
             data = json.loads(request.body)
-            # input_password = data['password']
             user = User.objects.get(user=data['user'])
 
             is_checked = bcrypt.checkpw(data['password'].encode('utf-8'), user.password.encode('utf-8'))      
