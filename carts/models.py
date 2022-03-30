@@ -11,7 +11,7 @@ class Cart(models.Model):
     class Meta:
         db_table = 'carts'
 
-class Order_Item(models.Model):
+class OrderItem(models.Model):
     order          = models.ForeignKey('Order', on_delete=models.CASCADE)
     user           = models.ForeignKey('users.User', on_delete=models.CASCADE)
     product        = models.ForeignKey('products.Product', on_delete=models.CASCADE)
@@ -25,7 +25,7 @@ class Order_Item(models.Model):
 
 class Order(models.Model):
     user        = models.ForeignKey('users.User', on_delete=models.CASCADE)
-    status      = models.ForeignKey('Order_State', on_delete=models.CASCADE)
+    status      = models.ForeignKey('OrderState', on_delete=models.CASCADE)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     shipment    = models.IntegerField()
     created_at  = models.DateTimeField(auto_now_add=True)
@@ -33,7 +33,7 @@ class Order(models.Model):
     class Meta:
         db_table = 'orders'
 
-class Order_State(models.Model):
+class OrderState(models.Model):
     status_code = models.CharField(max_length=100)
     created_at  = models.DateTimeField(auto_now_add=True)
     updated_at  = models.DateTimeField(auto_now=True)
