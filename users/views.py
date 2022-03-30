@@ -6,7 +6,7 @@ from django.http  import JsonResponse
 from django.forms import ValidationError
 
 from .models    import User
-from .validator import password_validator
+from .validator import validate_password
 
 class SignUpView(View):
     def post(self, request):
@@ -17,7 +17,7 @@ class SignUpView(View):
             address      = data['address']
             phone_number = data['phone_number']
 
-            password_validator(password)
+            validate_password(password)
             
             if User.objects.filter(user=user).exists():
                 return JsonResponse({'message':'ID_ALREADY_EXISTS'}, status=400)
@@ -44,26 +44,18 @@ class SignInView(View):
     def post(self, request):
         try: 
             data = json.loads(request.body)
-            input_user     = data['user']
-            input_password = data['password']
-            confirm_user   = User.objects.get(user=input_user)
+            # input_password = data['password']
+            user = User.objects.get(user=data['user'])
 
-            check_password = bcrypt.checkpw(input_password.encode('utf-8'), confirm_user.password.encode('utf-8'))      
-            if not check_password:
+            is_checked = bcrypt.checkpw(data['password'].encode('utf-8'), user.password.encode('utf-8'))      
+            if not is_checked:
                 return JsonResponse({'message':'INVALID_PASSWORD'}, status=401)   
             
-            access_token = jwt.encode({'user_id':confirm_user.id}, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-            return JsonResponse({
-                'message':'SUCCESS',
-                'token'  :access_token
-                }, status=200)
+            access_token = jwt.encode({'user_id':user.id}, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+            
+            return JsonResponse({'token':access_token}, status=200)
             
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'}, status=400)
         except User.DoesNotExist:
             return JsonResponse({'message':'IVALID_USER'}, status=401)
-
-
-
-
-
