@@ -1,11 +1,13 @@
-import pymysql
+
 
 from pathlib     import Path
 from my_settings import DATABASES, SECRET_KEY, ALGORITHM
 
-pymysql.install_as_MySQLdb()
+import pymysql
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+pymysql.install_as_MySQLdb()
 
 SECRET_KEY = SECRET_KEY
 
@@ -23,7 +25,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'users',
     'products',
-    'carts'
+    'carts',
+    #'django_extensions',
 ]
 
 MIDDLEWARE = [
