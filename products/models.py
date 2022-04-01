@@ -14,6 +14,7 @@ class Product(models.Model):
     origin        = models.CharField(max_length=100, default='국산')
     volume        = models.CharField(max_length=30)
     description   = models.TextField()
+    summary       = models.TextField(blank=True)
     price         = models.DecimalField(max_digits=10,decimal_places=2)
     stock         = models.IntegerField()
     created_at    = models.DateTimeField(auto_now_add=True)
