@@ -72,7 +72,7 @@ class ProfileCheck(View):
             'name'         : user.name,
             'address'      : user.address,
             'phone_number' : user.phone_number,
-            'money'        : user.money
+            'amount'       : user.amount
         }
 
         return JsonResponse({'message':result}, status=200)
