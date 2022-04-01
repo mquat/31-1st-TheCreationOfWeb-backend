@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.views import View
+from django.http  import JsonResponse
 
 from products.models import *
 
@@ -16,7 +17,7 @@ class CategoryView(View):
         
 class ProductView(View):
     def get(self,request,category_id,product_id):
-        product = Category.objects.filter(id = category_id)[product_id-1]
+        product = Category.objects.get(id = category_id).product_set.all()[product_id-1]
 
         product_information = {
             'name'       : product.name,
@@ -26,7 +27,7 @@ class ProductView(View):
             'summary'    : product.summary,
             'price'      : product.price,
             'stock'      : product.stock,
-            'images'     : [image.image_url for image in product.picture_set.all()]
+            'images'     : [image.image_url for image in product.picture_set.all()]  
         }
 
         return JsonResponse({'product_information' : product_information} , status = 200)
