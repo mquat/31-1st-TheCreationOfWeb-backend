@@ -17,7 +17,7 @@ class SignUpView(View):
             password     = data['password']
             address      = data['address']
             phone_number = data['phone_number']
-            money        = data['money']
+            amount       = data['amount']
 
             validate_password(password)
             
@@ -34,7 +34,7 @@ class SignUpView(View):
                 password     = hashed_password,
                 address      = address,
                 phone_number = phone_number,
-                money        = money
+                amount       = amount
             )
 
             return JsonResponse({'message':'SUCCESS'}, status=201)
@@ -55,7 +55,7 @@ class SignInView(View):
                 return JsonResponse({'message':'INVALID_PASSWORD'}, status=401)   
             
             access_token = jwt.encode({'user_id':user.id , 'exp':datetime.utcnow() + timedelta(seconds=600)}, settings.SECRET_KEY, settings.ALGORITHM)
-
+            
             return JsonResponse({'token':access_token}, status=200)
             
         except KeyError:
