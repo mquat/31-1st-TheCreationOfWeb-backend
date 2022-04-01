@@ -4,6 +4,7 @@ from django.conf  import settings
 from django.views import View
 from django.http  import JsonResponse
 from django.forms import ValidationError
+from datetime     import datetime, timedelta
 
 from .models    import User
 from .validator import validate_password
@@ -51,7 +52,7 @@ class SignInView(View):
             if not is_checked:
                 return JsonResponse({'message':'INVALID_PASSWORD'}, status=401)   
             
-            access_token = jwt.encode({'user_id':user.id}, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+            access_token = jwt.encode({'user_id':user.id, 'exp':datetime.utcnow() + timedelta(seconds=600)}, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
             
             return JsonResponse({'token':access_token}, status=200)
             
