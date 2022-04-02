@@ -64,12 +64,12 @@ class SignInView(View):
         except User.DoesNotExist:
             return JsonResponse({'message':'IVALID_USER'}, status=401)
 
-class ProfileCheck(View):
+class UserView(View):
     @login_decorator
     def get(self, request):
-        user = User.objects.get(id=request.user)
+        user = request.user
         result = {
-            'name'         : user.name,
+            'user'         : user.user,
             'address'      : user.address,
             'phone_number' : user.phone_number,
             'amount'       : user.amount
