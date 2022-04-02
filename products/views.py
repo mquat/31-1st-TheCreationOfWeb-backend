@@ -20,12 +20,12 @@ class ProductListView(View):
         except Category.DoesNotExist:
             return JsonResponse({'message' : 'INVALID_CATEGORY_ID'} , status = 400)
         
-class ProductView(View):
+class ProductDetailView(View):
     def get(self,request,product_id):
         try:
             product = Product.objects.get(id = product_id)
 
-            product_information = {
+            product_detail = {
                 'name'        : product.name,
                 'origin'      : product.origin,
                 'volume'      : product.volume,
@@ -36,6 +36,6 @@ class ProductView(View):
                 'images'      : [image.image_url for image in product.picture_set.all()]  
             }
 
-            return JsonResponse({'product_information' : product_information} , status = 200)
+            return JsonResponse({'product_detail' : product_detail} , status = 200)
         except Product.DoesNotExist:
             return JsonResponse({'message' : 'INVALID_PRODUCT_ID'} , status = 400)
