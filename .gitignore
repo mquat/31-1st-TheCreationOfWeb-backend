@@ -384,3 +384,6 @@ zsdoc/data
 my_settings.py
 
 data.py
+category_0401.csv 
+product_0401.csv 
+image_url_0401.csv
