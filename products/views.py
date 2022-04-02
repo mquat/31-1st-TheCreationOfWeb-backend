@@ -7,8 +7,7 @@ class ProductListView(View):
     def get(self,request):
         try:
             category_id = request.GET.get('category_id' , None)
-            category    = Category.objects.get(id = category_id)
-            products    = category.product_set.all()
+            products    = Product.objects.filter(category_id = category_id)
 
             products_list = [{
                 'name'  : product.name,
@@ -17,8 +16,8 @@ class ProductListView(View):
             } for product in products]
 
             return JsonResponse({'product_list' : products_list} , status = 200)
-        except Category.DoesNotExist:
-            return JsonResponse({'message' : 'INVALID_CATEGORY_ID'} , status = 400)
+        except Product.DoesNotExist:
+            return JsonResponse({'message' : 'INVALID_PRODUCT'} , status = 400)
         
 class ProductDetailView(View):
     def get(self,request,product_id):
