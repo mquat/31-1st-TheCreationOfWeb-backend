@@ -6,7 +6,13 @@ from products.models import *
 class ProductListView(View):
     def get(self,request):
         category_id = request.GET.get('category_id' , None)
-        products    = Product.objects.filter(category_id = category_id)
+        page_id     = int(request.GET.get('page_id' , 1) or 1)
+
+        PAGE_SIZE   = 10
+        offset      = (page_id - 1) * PAGE_SIZE
+        limit       = page_id * PAGE_SIZE
+
+        products    = Product.objects.filter(category_id = category_id)[offset:limit]
 
         products_list = [{
             'name'  : product.name,
