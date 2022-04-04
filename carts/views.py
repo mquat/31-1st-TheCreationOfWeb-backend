@@ -2,14 +2,14 @@ from django.http            import JsonResponse
 from django.views           import View
 from django.core.exceptions import ValidationError
 
-from users.utils import login_decorator
+from users.utils  import login_decorator
+from carts.models import Cart
 
 class CartView(View):
     @login_decorator
     def get(self,request):
-        try:
-            user  = request.user        
-            carts = Cart.objects.filter(user = user).select_related('product')
+        try:       
+            carts = Cart.objects.filter(user = request.user).select_related('product')
 
             cart_list = [{
                 'id'       : cart.product.id,
