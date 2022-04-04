@@ -31,4 +31,4 @@ class ProductListView(View):
         except ValueError:
             return JsonResponse({'message' : 'QUERY_STRING_ERROR'} , status = 404)
         except TypeError:
-            return JsonResponse({'message' : 'QUERY_STRING_ERRORqwer'} , status = 404)
+            return JsonResponse({'message' : 'QUERY_STRING_ERROR'} , status = 404)
