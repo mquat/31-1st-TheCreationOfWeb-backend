@@ -31,4 +31,3 @@ class Picture(models.Model):
 
     class Meta:
         db_table = 'pictures'
-

@@ -8,6 +8,7 @@ from datetime     import datetime, timedelta
 
 from .models    import User
 from .validator import validate_password
+from .utils     import login_decorator
 
 class SignUpView(View):
     def post(self, request):
@@ -61,4 +62,17 @@ class SignInView(View):
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'}, status=400)
         except User.DoesNotExist:
-            return JsonResponse({'message':'IVALID_USER'}, status=401)
+            return JsonResponse({'message':'INVALID_USER'}, status=401)
+
+class UserView(View):
+    @login_decorator
+    def get(self, request):
+        user = request.user
+        result = {
+            'user'         : user.user,
+            'address'      : user.address,
+            'phone_number' : user.phone_number,
+            'amount'       : user.amount
+        }
+
+        return JsonResponse({'message':result}, status=200)

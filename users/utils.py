@@ -10,7 +10,7 @@ def login_decorator(func):
         try:
             access_token = request.headers.get('Authorization')
             payload      = jwt.decode(access_token, settings.SECRET_KEY, algorithms=settings.ALGORITHM)
-            request.user = User.objects.get({'id':payload['user_id']})
+            request.user = User.objects.get(id = payload['user_id'])
 
             return func(self, request)
         except KeyError:
@@ -19,5 +19,7 @@ def login_decorator(func):
             return JsonResponse({'message':'INVALID_USER'}, status=404)
         except jwt.DecodeError:
             return JsonResponse({'message':'TOKEN_ERROR'}, status=400)
+        except jwt.ExpiredSignatureError:
+            return JsonResponse({'message':'EXPIRED_TOKEN'}, status=400)
 
     return wrapper
