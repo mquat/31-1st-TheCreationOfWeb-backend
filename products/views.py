@@ -6,13 +6,8 @@ from products.models import *
 class ProductListView(View):
     def get(self,request):
         category_id = int(request.GET.get('category_id' , None))
-        offset      = request.GET.get('offset' , None)
-        limit       = request.GET.get('limit' , None)
-
-        if offset == None:
-            offset = 0
-        if limit == None:
-            limit  = 10
+        offset      = request.GET.get('offset' , 0)
+        limit       = request.GET.get('limit' , 10)
         
         products = Product.objects.filter(category_id = category_id)[int(offset) : int(offset)+int(limit)]
 
