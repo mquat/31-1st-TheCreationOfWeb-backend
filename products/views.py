@@ -6,16 +6,15 @@ from products.models import *
 class ProductListView(View):
     def get(self,request):
         category_id = int(request.GET.get('category_id' , None))
-        offset = request.GET.get('offset' , None)
-        limit = request.GET.get('limit' , None)
+        offset      = request.GET.get('offset' , None)
+        limit       = request.GET.get('limit' , None)
 
-        if category_id <= 0:
-            return JsonResponse({'message' : 'INVALID_CATEGORY_ID'} , status = 404)
-
-        # offset      = (page_id - 1) * PAGE_SIZE
-        # limit       = page_id * PAGE_SIZE
-
-        products    = Product.objects.filter(category_id = category_id)#[offset:limit]
+        if offset == None:
+            offset = 0
+        if limit == None:
+            limit  = 10
+        
+        products = Product.objects.filter(category_id = category_id)[int(offset) : int(offset)+int(limit)]
 
         products_list = [{
             'id'     : product.id,
