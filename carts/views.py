@@ -1,3 +1,5 @@
+import json
+
 from django.http            import JsonResponse
 from django.views           import View
 from django.core.exceptions import ValidationError
@@ -28,3 +30,13 @@ class CartListView(View):
 
         except ValidationError as e:
             return JsonResponse({'message' : e.message} , status = 401)
+
+    @login_decorator
+    def delete(self, request, cart_id):
+        try: 
+            data = json.loads(request.body)
+
+            Cart.objects.filter(id__in = cart_id, user = request.user).delete()
+            return JsonResponse({'message':'NO_CONTENT'}, status=204)
+        except ValidationError as e:
+            return JsonResponse({'message':e.message}, status=401)
