@@ -47,17 +47,15 @@ class CartView(View):
                 defaults = {'quantity':data['quantity']+current_quantity},
             )
 
-            summary = [{
+            carts = [{
                 'image_url' : [image.image_url for image in item.product.picture_set.all()],
                 'name'      : item.product.name,
                 'price'     : item.price,
                 'quantity'  : item.quantity 
             } for item in Cart.objects.filter(user=user)]
 
-            return JsonResponse({'message':summary}, status=201)
+            return JsonResponse({'message':carts}, status=201)
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'}, status=400)
-        except json.JSONDecodeError:
-            return JsonResponse({'message':'JSON_DECODE_ERROR'}, status=400)
         except ValidationError as e:
             return JsonResponse({'message':e.message}, status=401)
