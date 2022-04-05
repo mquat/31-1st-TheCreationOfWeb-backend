@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from users.utils  import login_decorator
 from carts.models import Cart
 
-class CartView(View):
+class CartListView(View):
     @login_decorator
     def get(self,request):
         try:       
@@ -26,19 +26,11 @@ class CartView(View):
             return JsonResponse({'message' : e.message} , status = 401)
 
     @login_decorator
-    def delete(self, request):
+    def delete(self, request, cart_id):
         try: 
-            data = json.loads(request.body) 
+            data = json.loads(request.body)
 
-            user    = request.user
-            product = data['id']
-
-            if product == 0:
-                Cart.objects.filter(user=user).delete()
-                return JsonResponse({'message':'ALL_DELETED'}, status=204)
-            
-            Cart.objects.get(user=user, product=product).delete() 
-
-            return JsonResponse({'message':'ITEM_DELETED'}, status=204)
+            Cart.objects.filter(id__in = cart_id, user = request.user).delete()
+            return JsonResponse({'message':'NO_CONTENT'}, status=204)
         except ValidationError as e:
             return JsonResponse({'message':e.message}, status=401)
