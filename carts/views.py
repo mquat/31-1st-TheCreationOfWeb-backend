@@ -7,11 +7,11 @@ from carts.models import Cart
 
 class CartView(View):
     def patch(self,request):
-        # request 에는 product_id 와 quantity 들어간다
+        # request 에는 id 와 quantity 들어간다
         user = request.user
         data = json.loads(request.body)
-        product_id = data['product_id']
+        product_id = data['id']
         quantity = data['quantity']
 
-        
+        Cart.objects.filter(user = request.body)
         #return 바뀐 quantity, 총 금액
