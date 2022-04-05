@@ -5,3 +5,4 @@ from carts.views import CartView
 urlpatterns = [
     path('', CartView.as_view())
 ]
+
