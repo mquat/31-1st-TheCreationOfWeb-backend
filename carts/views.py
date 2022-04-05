@@ -9,9 +9,9 @@ class CartView(View):
     @login_decorator
     def get(self,request):
         try:       
-            carts = Cart.objects.filter(user = request.user).select_related('product')
+            carts = Cart.objects.filter(user = request.user).select_related('product').prefetch_related('product__picture_set')
 
-            cart_list = [{
+            result = [{
                 'id'       : cart.product.id,
                 'images'   : [image.image_url for image in cart.product.picture_set.all()],
                 'name'     : cart.product.name,
@@ -20,9 +20,11 @@ class CartView(View):
             } for cart in carts]
 
             total_price = 0
-            for cart in Cart.objects.filter(user = request.user):
+
+            for cart in carts:
                 total_price += cart.price
 
-            return JsonResponse({'cart_list' : cart_list , 'total_price' : total_price} , status = 200)
+            return JsonResponse({'cart_list' : result, 'total_price' : total_price} , status = 200)
+
         except ValidationError as e:
             return JsonResponse({'message' : e.message} , status = 401)
