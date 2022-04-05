@@ -4,8 +4,9 @@ from django.http            import JsonResponse
 from django.views           import View
 from django.core.exceptions import ValidationError
 
-from users.utils  import login_decorator
-from carts.models import Cart
+from users.utils     import login_decorator
+from carts.models    import Cart
+from products.models import Product
 
 class CartView(View):
     @login_decorator
@@ -25,13 +26,22 @@ class CartView(View):
         except ValidationError as e:
             return JsonResponse({'message' : e.message} , status = 401)
 
-class CartView(View):
+    @login_decorator
     def patch(self,request):
-        # request 에는 id 와 quantity 들어간다
-        user = request.user
-        data = json.loads(request.body)
-        product_id = data['id']
-        quantity = data['quantity']
+        try:
+            data    = json.loads(request.body)
+            product = Product.objects.get(id = data['id'])
 
-        Cart.objects.filter(user = request.user)
-        #return 바뀐 quantity, 총 금액
+            if data['quantity'] < 1:
+                return JsonResponse({'message' : 'QUANTITY_UNDER_1_ERROR'} , status = 400)
+            
+            cart_modification = Cart.objects.filter(user = request.user , product = product)
+            cart_modification.update(quantity = data['quantity'] , price = data['quantity'] * product.price)
+
+            total_price = 0
+            for cart in Cart.objects.filter(user = request.user):
+                total_price += cart.price
+            
+            return JsonResponse({'total_price' : total_price} , status = 200)
+        except ValidationError as e:
+            return JsonResponse({'message' : e.message} , status = 401)
