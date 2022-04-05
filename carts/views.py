@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from users.utils  import login_decorator
 from carts.models import Cart
 
-class CartView(View):
+class CartListView(View):
     @login_decorator
     def get(self,request):
         try:       
