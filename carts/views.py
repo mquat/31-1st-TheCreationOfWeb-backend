@@ -19,6 +19,10 @@ class CartView(View):
                 'quantity' : cart.quantity
             } for cart in carts]
 
-            return JsonResponse({'cart_list' : cart_list} , status = 200)
+            total_price = 0
+            for cart in Cart.objects.filter(user = request.user):
+                total_price += cart.price
+
+            return JsonResponse({'cart_list' : cart_list , 'total_price' : total_price} , status = 200)
         except ValidationError as e:
             return JsonResponse({'message' : e.message} , status = 401)
