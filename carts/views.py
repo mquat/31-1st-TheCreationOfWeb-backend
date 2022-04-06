@@ -8,13 +8,13 @@ from users.utils     import login_decorator
 from products.models import Product
 from carts.models    import Cart
 
-class CartView(View):
+class CartListView(View):
     @login_decorator
     def get(self,request):
         try:       
-            carts = Cart.objects.filter(user = request.user).select_related('product')
+            carts = Cart.objects.filter(user = request.user).select_related('product').prefetch_related('product__picture_set')
 
-            cart_list = [{
+            result = [{
                 'id'       : cart.product.id,
                 'images'   : [image.image_url for image in cart.product.picture_set.all()],
                 'name'     : cart.product.name,
@@ -22,40 +22,51 @@ class CartView(View):
                 'quantity' : cart.quantity
             } for cart in carts]
 
-            return JsonResponse({'cart_list' : cart_list} , status = 200)
+            total_price = 0
+
+            for cart in carts:
+                total_price += cart.price
+
+            return JsonResponse({'cart_list' : result, 'total_price' : total_price} , status = 200)
+
         except ValidationError as e:
             return JsonResponse({'message' : e.message} , status = 401)
 
-class CartView(View):
     @login_decorator
     def post(self, request):
         try:
             data = json.loads(request.body)
 
-            user             = request.user
-            product          = Product.objects.get(id=data['product_id'])
-            cart_product     = Cart.objects.filter(user=user, product=product)
-            current_quantity = 0 
-
-            if cart_product.exists():
-                current_quantity = Cart.objects.get(user=user, product=product).quantity 
-
-            cart, created = Cart.objects.update_or_create(
-                user     = user,  
-                product  = product, 
-                price    = data['price'],
-                defaults = {'quantity':data['quantity']+current_quantity},
+            cart, is_created = Cart.objects.get_or_create(
+                user        = request.user,  
+                product_id  = data['product_id'], 
+                defaults     = {
+                'price'    : data['price'],
+                'quantity' : data['quantity']
+                },
             )
 
-            carts = [{
-                'image_url' : [image.image_url for image in item.product.picture_set.all()],
-                'name'      : item.product.name,
-                'price'     : item.price,
-                'quantity'  : item.quantity 
-            } for item in Cart.objects.filter(user=user)]
+            if not is_created:
+                cart.quantity += data['quantity']
+                cart.save() 
 
-            return JsonResponse({'message':carts}, status=201)
-        except KeyError:
-            return JsonResponse({'message':'KEY_ERROR'}, status=400)
+            # carts = [{
+            #     'image_url' : [image.image_url for image in item.product.picture_set.all()],
+            #     'name'      : item.product.name,
+            #     'price'     : item.price,
+            #     'quantity'  : item.quantity 
+            # } for item in Cart.objects.filter(user = request.user)]
+
+            return JsonResponse({'message':'success'}, status=201)
+        except ValidationError as e:
+            return JsonResponse({'message':e.message}, status=401)
+
+    @login_decorator
+    def delete(self, request):
+        try: 
+            # data = json.loads(request.body)
+            cart_id = request.GET.getlist('cart_id')
+            Cart.objects.filter(id__in = cart_id, user = request.user).delete()
+            return JsonResponse({'message':'NO_CONTENT'}, status=204)
         except ValidationError as e:
             return JsonResponse({'message':e.message}, status=401)
