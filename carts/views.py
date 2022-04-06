@@ -34,18 +34,6 @@ class CartListView(View):
             return JsonResponse({'message' : e.message} , status = 401)
 
     @login_decorator
-    def delete(self, request):
-        try: 
-            cart_ids = request.GET.getlist('cart_id')
-
-            Cart.objects.filter(id__in = cart_ids, user = request.user).delete()
-            
-            return JsonResponse({'message':'NO_CONTENT'}, status=204)
-        except ValidationError as e:
-            return JsonResponse({'message':e.message}, status=401)
-
-class CartPriceView(View):
-    @login_decorator
     def patch(self,request,cart_id):
         try:
             data = json.loads(request.body)
@@ -64,3 +52,36 @@ class CartPriceView(View):
 
         except ValidationError as e:
             return JsonResponse({'message' : e.message} , status = 401)
+
+    @login_decorator
+    def delete(self, request):
+        try: 
+            cart_ids = request.GET.getlist('cart_id')
+
+            Cart.objects.filter(id__in = cart_ids, user = request.user).delete()
+            
+            return JsonResponse({'message':'NO_CONTENT'}, status=204)
+        except ValidationError as e:
+            return JsonResponse({'message':e.message}, status=401)
+
+    @login_decorator
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+
+            cart, is_created = Cart.objects.get_or_create(
+                user        = request.user,  
+                product_id  = data['product_id'], 
+                defaults    = {
+                'price'    : data['price'],
+                'quantity' : data['quantity']
+                },
+            )
+
+            if not is_created:
+                cart.quantity += data['quantity']
+                cart.save() 
+
+            return JsonResponse({'message':'success'}, status=201)
+        except ValidationError as e:
+            return JsonResponse({'message':e.message}, status=401)
