@@ -2,10 +2,12 @@ import json
 
 from django.http            import JsonResponse
 from django.views           import View
+from django.db.models       import Sum
 from django.core.exceptions import ValidationError
 
-from users.utils  import login_decorator
-from carts.models import Cart
+from users.utils     import login_decorator
+from carts.models    import Cart
+from products.models import Product
 
 class CartListView(View):
     @login_decorator
@@ -31,7 +33,6 @@ class CartListView(View):
         except ValidationError as e:
             return JsonResponse({'message' : e.message} , status = 401)
 
-    @login_decorator
     def delete(self, request, cart_id):
         try: 
             data = json.loads(request.body)
@@ -40,3 +41,24 @@ class CartListView(View):
             return JsonResponse({'message':'NO_CONTENT'}, status=204)
         except ValidationError as e:
             return JsonResponse({'message':e.message}, status=401)
+
+class CartPriceView(View):
+    @login_decorator
+    def patch(self,request,cart_id):
+        try:
+            data = json.loads(request.body)
+
+            if data['quantity'] < 1:
+                return JsonResponse({'message' : 'QUANTITY_UNDER_1_ERROR'} , status = 400)
+            
+            cart          = Cart.objects.get(id = cart_id)
+            cart.quantity = data['quantity']
+            cart.price    = data['quantity'] * cart.product.price
+            cart.save()
+
+            total_price = Cart.objects.filter(user = request.user).aggregate(Sum('price'))
+            
+            return JsonResponse({'total_price' : total_price['price__sum']} , status = 200)
+
+        except ValidationError as e:
+            return JsonResponse({'message' : e.message} , status = 401)
