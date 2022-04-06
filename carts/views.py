@@ -2,11 +2,12 @@ import json
 
 from django.http            import JsonResponse
 from django.views           import View
+from django.db.models       import Sum
 from django.core.exceptions import ValidationError
 
 from users.utils     import login_decorator
-from products.models import Product
 from carts.models    import Cart
+from products.models import Product
 
 class CartListView(View):
     @login_decorator
@@ -40,8 +41,8 @@ class CartListView(View):
             cart, is_created = Cart.objects.get_or_create(
                 user        = request.user,  
                 product_id  = data['product_id'], 
-                defaults     = {
-                'price'    : data['price'],
+                price       = data['price'],
+                defaults    = {
                 'quantity' : data['quantity']
                 },
             )
@@ -49,13 +50,6 @@ class CartListView(View):
             if not is_created:
                 cart.quantity += data['quantity']
                 cart.save() 
-
-            # carts = [{
-            #     'image_url' : [image.image_url for image in item.product.picture_set.all()],
-            #     'name'      : item.product.name,
-            #     'price'     : item.price,
-            #     'quantity'  : item.quantity 
-            # } for item in Cart.objects.filter(user = request.user)]
 
             return JsonResponse({'message':'success'}, status=201)
         except ValidationError as e:
@@ -70,3 +64,24 @@ class CartListView(View):
             return JsonResponse({'message':'NO_CONTENT'}, status=204)
         except ValidationError as e:
             return JsonResponse({'message':e.message}, status=401)
+
+class CartPriceView(View):
+    @login_decorator
+    def patch(self,request,cart_id):
+        try:
+            data = json.loads(request.body)
+
+            if data['quantity'] < 1:
+                return JsonResponse({'message' : 'QUANTITY_UNDER_1_ERROR'} , status = 400)
+            
+            cart          = Cart.objects.get(id = cart_id)
+            cart.quantity = data['quantity']
+            cart.price    = data['quantity'] * cart.product.price
+            cart.save()
+
+            total_price = Cart.objects.filter(user = request.user).aggregate(Sum('price'))
+            
+            return JsonResponse({'total_price' : total_price['price__sum']} , status = 200)
+
+        except ValidationError as e:
+            return JsonResponse({'message' : e.message} , status = 401)
