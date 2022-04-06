@@ -7,7 +7,6 @@ from django.core.exceptions import ValidationError
 
 from users.utils     import login_decorator
 from carts.models    import Cart
-from products.models import Product
 
 class CartListView(View):
     @login_decorator
@@ -32,6 +31,28 @@ class CartListView(View):
 
         except ValidationError as e:
             return JsonResponse({'message' : e.message} , status = 401)
+
+    @login_decorator
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+
+            cart, is_created = Cart.objects.get_or_create(
+                user        = request.user,  
+                product_id  = data['product_id'], 
+                price       = data['price'],
+                defaults    = {
+                'quantity' : data['quantity']
+                },
+            )
+
+            if not is_created:
+                cart.quantity += data['quantity']
+                cart.save() 
+
+            return JsonResponse({'message':'success'}, status=201)
+        except ValidationError as e:
+            return JsonResponse({'message':e.message}, status=401)
 
     @login_decorator
     def patch(self,request,cart_id):
