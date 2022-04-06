@@ -33,11 +33,13 @@ class CartListView(View):
         except ValidationError as e:
             return JsonResponse({'message' : e.message} , status = 401)
 
-    def delete(self, request, cart_id):
+    @login_decorator
+    def delete(self, request):
         try: 
-            data = json.loads(request.body)
+            cart_ids = request.GET.getlist('cart_id')
 
-            Cart.objects.filter(id__in = cart_id, user = request.user).delete()
+            Cart.objects.filter(id__in = cart_ids, user = request.user).delete()
+            
             return JsonResponse({'message':'NO_CONTENT'}, status=204)
         except ValidationError as e:
             return JsonResponse({'message':e.message}, status=401)
