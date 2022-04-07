@@ -7,7 +7,7 @@ from django.forms import ValidationError
 from datetime     import datetime, timedelta
 
 from .models    import User
-from .validator import validate_password
+from .validator import validate_signup
 from .utils     import login_decorator
 
 class SignUpView(View):
@@ -20,7 +20,7 @@ class SignUpView(View):
             phone_number = data['phone_number']
             amount       = data['amount']
 
-            validate_password(password)
+            validate_signup(user,password)
             
             if User.objects.filter(user=user).exists():
                 return JsonResponse({'message':'ID_ALREADY_EXISTS'}, status=400)

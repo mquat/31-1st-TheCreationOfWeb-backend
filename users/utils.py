@@ -20,6 +20,6 @@ def login_decorator(func):
         except jwt.DecodeError:
             return JsonResponse({'message':'TOKEN_ERROR'}, status=400)
         except jwt.ExpiredSignatureError:
-            return JsonResponse({'message':'EXPIRED_TOKEN'}, status=400)
+            return JsonResponse({'message':'EXPIRED_TOKEN'}, status=401)
 
     return wrapper
