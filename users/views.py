@@ -20,8 +20,7 @@ class SignUpView(View):
             phone_number = data['phone_number']
             amount       = data['amount']
 
-            validate_signup(user)
-            validate_signup(password)
+            validate_signup(user,password)
             
             if User.objects.filter(user=user).exists():
                 return JsonResponse({'message':'ID_ALREADY_EXISTS'}, status=400)
