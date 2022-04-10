@@ -8,7 +8,7 @@ FRUITZ_COMPANY (과일/과일주스를 판매하는 e-commerce site)
 + 구성 : Front-end 3명(김동욱/남용현/노영완), Back-end 2명(류미류/한상안)
 + 프로젝트 선정 이유 
   - 국내 커피 온라인 판매 사이트로, 기본적인 기능들을 구현해볼 수 있음 
-  - 카테고리 변경 용이, 팀에서 선호하느 품목으로 만들어 볼 수 있음 
+  - 카테고리 변경 용이, 팀에서 선호하는 품목으로 만들어 볼 수 있음 
 + github 
   - [front-end](https://github.com/wecode-bootcamp-korea/31-1st-TheCreationOfWeb-frontend)
   - [back-end](https://github.com/wecode-bootcamp-korea/31-1st-TheCreationOfWeb-backend)
