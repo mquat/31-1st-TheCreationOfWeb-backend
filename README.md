@@ -19,7 +19,9 @@ FRUITZ_COMPANY (과일/과일주스를 판매하는 e-commerce site)
 <img width="1200" alt="Screen Shot 2022-04-10 at 11 01 37 PM" src="https://user-images.githubusercontent.com/97735091/162623031-440162c7-d1c7-49b6-ba67-aea00dbc55cb.png">
 
 <h1>DB modeling</h1>
-to be updated 
+<img width="800" alt="Screen Shot 2022-04-10 at 11 53 34 PM" src="https://user-images.githubusercontent.com/97735091/162625445-2bca5cdc-1484-4a7a-9b5c-03472e7bed89.png">
+
+
 
 <h1>Technologies & Tools</h1>
 
@@ -36,6 +38,7 @@ to be updated
 + 카테고리 별 제품 조회 
 + 제품 상세 조회 
 + 장바구니 기능(GET, POST, PATCH, DELETE)
++ (추가 예정)찜하기, 결제 기능 
 
 <h1>API Documentation</h1>
 to be updated
