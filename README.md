@@ -41,7 +41,7 @@ FRUITZ_COMPANY (과일/과일주스를 판매하는 e-commerce site)
 + (추가 예정)찜하기, 결제 기능 
 
 <h1>API Documentation</h1>
-to be updated
+https://go.postman.co/workspace/My-Workspace~90561d70-d2be-4952-866c-9ced6a5032a1/collection/20018497-be2551b4-e73e-424e-b379-63181cdf0dba?action=share&creator=20018497
 
 <h1>Reference</h1>
 
