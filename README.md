@@ -18,6 +18,9 @@ FRUITZ_COMPANY (과일/과일주스를 판매하는 e-commerce site)
 <h1>Demo</h1>
 <img width="1200" alt="Screen Shot 2022-04-10 at 11 01 37 PM" src="https://user-images.githubusercontent.com/97735091/162623031-440162c7-d1c7-49b6-ba67-aea00dbc55cb.png">
 
+![product](https://user-images.githubusercontent.com/97735091/171798582-a667d0ab-227c-4c9d-a87d-276451fc9cef.gif)
+
+
 <h1>DB modeling</h1>
 <img width="800" alt="Screen Shot 2022-04-10 at 11 53 34 PM" src="https://user-images.githubusercontent.com/97735091/162625445-2bca5cdc-1484-4a7a-9b5c-03472e7bed89.png">
 
