@@ -41,7 +41,6 @@ FRUITZ_COMPANY (과일/과일주스를 판매하는 e-commerce site)
 + 카테고리 별 제품 조회 (pagination 구현) 
 + 제품 상세 조회 
 + 장바구니 기능(GET, POST, PATCH, DELETE)
-+ (추가 예정)찜하기, 결제 기능 
 
 <h1>API Documentation</h1>
 
